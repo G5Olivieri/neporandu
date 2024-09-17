@@ -10,7 +10,7 @@ const conn = mysql.createConnection({
 conn.execute(`
 create table if not exists users(
     id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    username varchar(256) NOT NULL,
+    username varchar(256) NOT NULL UNIQUE,
     password varchar(1024) NOT NULL
 );
 `, (err, results, fields) => {
