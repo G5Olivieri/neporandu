@@ -3,6 +3,11 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const mysql = require('mysql2/promise')
 
+/**
+ * 
+ * @param {mysql.Pool} pool 
+ * @returns {express.Application}
+ */
 function buildApp(pool) {
     const app = express()
 
@@ -10,17 +15,25 @@ function buildApp(pool) {
     app.use(bodyParser.json())
 
     app.post('/signin', async (req, res) => {
-        const result = await pool.execute("SELECT * FROM users WHERE username=?", [req.body.username])
-        if (user.password === password) {
-            return res.end({
-                "access_token": "",
-                "expires_in": 3600,
-                "token_type": "Bearer"
-            })
+        const [results, fields] = await pool.query("SELECT * FROM users WHERE username=?", [req.body.username])
+        if (results.length === 0) {
+            console.log("Não encontrou usuário", req.body.username)
+            res.status(401).send({ error: "Usuário ou senha inválida" }).end()
+            return
         }
-        res.status(401).end({
-            error: "Usuário ou senha inválida"
-        })
+
+        // TODO: compare hashes instead
+        if (results[0].password !== req.body.password) {
+            return res.status(401).send({
+                error: "Usuário ou senha inválida"
+            }).end()
+        }
+
+        return res.send({
+            "access_token": "LOGGED",
+            "expires_in": 3600,
+            "token_type": "Bearer"
+        }).end()
     })
 
     app.post('/signup', (req, res) => {
@@ -34,7 +47,9 @@ async function main() {
     const pool = await mysql.createPool({
         host: 'localhost',
         user: 'root',
-        database: 'test',
+        port: 3306,
+        password: 'my-secret-pw',
+        database: 'quiz',
         waitForConnections: true,
         connectionLimit: 10,
         maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
