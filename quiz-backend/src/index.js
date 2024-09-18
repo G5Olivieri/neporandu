@@ -81,6 +81,46 @@ function buildApp(pool) {
         }
     })
 
+    app.get('/userinfo', async (req, res) => {
+        const authorizationHeader = req.header('authorization')
+        const [scheme, token] = authorizationHeader.split(' ')
+        if (scheme.toLowerCase() !== 'bearer') {
+            return res.status(401).end()
+        }
+        try {
+            const { payload } = await jose.jwtVerify(token, secret)
+            if (!payload) {
+                return res.status(401).end()
+            }
+            const [results, fields] = await pool.query('SELECT username FROM users WHERE id=?', [payload.sub])
+            if (results.length > 0) {
+                return res.send(results[0]).end()
+            }
+            return res.status(401).end()
+        } catch (e) {
+            console.error(e)
+            return res.status(500).end()
+        }
+    })
+
+    app.get('/categories', async (req, res) => {
+        const authorizationHeader = req.header('authorization')
+        const [scheme, token] = authorizationHeader.split(' ')
+        if (scheme.toLowerCase() !== 'bearer') {
+            return res.status(401).end()
+        }
+        try {
+            const { payload } = await jose.jwtVerify(token, secret)
+            if (!payload) {
+                return res.status(401).end()
+            }
+            const [results, fields] = await pool.query('SELECT id, name FROM categories')
+            return res.send(results).end()
+        } catch (e) {
+            console.error(e)
+            return res.status(500).end()
+        }
+    })
     return app
 }
 

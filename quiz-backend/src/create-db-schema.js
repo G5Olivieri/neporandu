@@ -16,4 +16,13 @@ create table if not exists users(
 `, (err, results, fields) => {
     console.log(err, results, fields)
 })
+
+conn.execute(`
+create table if not exists categories(
+    id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name varchar(256) NOT NULL UNIQUE
+);
+`, (err, results, fields) => {
+    console.log(err, results, fields)
+})
 conn.end()

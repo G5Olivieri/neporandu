@@ -2,11 +2,19 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './routes/App';
+import Quiz from './routes/Quiz';
 import Login from './routes/Login';
 import Register from './routes/Register';
 import reportWebVitals from './reportWebVitals';
+import PrivateRoute from './PrivateRoute';
+import { AuthProvider } from './auth/useAuth';
+import { UserProvider } from './auth/useUser';
 
 const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <App />
+  },
   {
     path: '/login',
     element: <Login />
@@ -16,15 +24,19 @@ const router = createBrowserRouter([
     element: <Register />
   },
   {
-    path: '/',
-    element: <App />
+    path: '/quiz',
+    element: <PrivateRoute><Quiz /></PrivateRoute>
   }
 ])
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <UserProvider>
+        <RouterProvider router={router} />
+      </UserProvider>
+    </AuthProvider>
   </React.StrictMode>
 );
 
