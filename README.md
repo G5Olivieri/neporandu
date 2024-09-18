@@ -1,3 +1,3 @@
 # neporandu
 
-ñeporandu é perguntas em guarani
+ñeporandu significa perguntas em guarani
