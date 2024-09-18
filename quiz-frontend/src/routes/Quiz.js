@@ -1,6 +1,7 @@
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { useAuth } from "../auth/useAuth"
+import { Link } from 'react-router-dom';
 
 export default function Quiz() {
   const [categories, setCategories] = useState([])
@@ -23,7 +24,12 @@ export default function Quiz() {
         Quiz
       </Typography>
       <ul>
-        {categories.map(category => (<li key={category.id}>{category.name}</li>))}
+        {categories.map(category => (
+          <li key={category.id}>
+            <Link to={`/categories/${category.id}`}>{category.name}</Link>
+          </li>
+        ))
+        }
       </ul>
     </div>
   );

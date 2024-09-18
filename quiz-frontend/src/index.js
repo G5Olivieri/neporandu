@@ -5,6 +5,7 @@ import App from './routes/App';
 import Quiz from './routes/Quiz';
 import Login from './routes/Login';
 import Register from './routes/Register';
+import Category from './routes/Category';
 import reportWebVitals from './reportWebVitals';
 import PrivateRoute from './PrivateRoute';
 import { AuthProvider } from './auth/useAuth';
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
   {
     path: '/quiz',
     element: <PrivateRoute><Quiz /></PrivateRoute>
+  },
+  {
+    path: '/categories/:categoryId',
+    element: <PrivateRoute><Category /></PrivateRoute>
   }
 ])
 

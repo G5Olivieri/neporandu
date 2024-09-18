@@ -14,8 +14,24 @@ function useAuthService() {
         return !!accessToken
     }
 
-    function register(username, password) {
-
+    async function register(username, password) {
+        const response = await fetch('http://localhost:8080/signup', {
+            method: "POST",
+            headers: {
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password
+            })
+        })
+        if (response.ok) {
+            const data = await response.json()
+            localStorage.setItem('accessToken', data.accessToken)
+            setAccessToken(data.accessToken)
+            return data
+        }
+        throw Error("Usuário ou senha inválidos")
     }
 
     async function login(username, password) {

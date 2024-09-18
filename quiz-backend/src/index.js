@@ -121,6 +121,39 @@ function buildApp(pool) {
             return res.status(500).end()
         }
     })
+
+    app.get('/categories/:id', async (req, res) => {
+        const authorizationHeader = req.header('authorization')
+        const [scheme, token] = authorizationHeader.split(' ')
+        if (scheme.toLowerCase() !== 'bearer') {
+            return res.status(401).end()
+        }
+        try {
+            const { payload } = await jose.jwtVerify(token, secret)
+            const category = {}
+            if (!payload) {
+                return res.status(401).end()
+            }
+            const [results] = await pool.query('SELECT id, name FROM categories WHERE id=?', [req.params.id])
+            if (results.length === 0) {
+                return res.status(404).end()
+            }
+            category['id'] = results[0].id
+            category['name'] = results[0].name
+            category['questions'] = []
+            const [questionsResults] = await pool.query('SELECT id, question FROM questions WHERE category_id=?', [req.params.id])
+            for (let questionResult of questionsResults) {
+                question = { id: questionResult.id, question: questionResult.question }
+                const [optionsResults] = await pool.query('SELECT id, value, correct FROM options WHERE question_id=?', [questionResult.id])
+                question['options'] = optionsResults
+                category['questions'].push(question)
+            }
+            return res.send(category).end()
+        } catch (e) {
+            console.error(e)
+            return res.status(500).end()
+        }
+    })
     return app
 }
 
