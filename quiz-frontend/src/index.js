@@ -1,38 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import App from './routes/App';
-import Quiz from './routes/Quiz';
-import Login from './routes/Login';
-import Register from './routes/Register';
-import Category from './routes/Category';
+import { RouterProvider } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
-import PrivateRoute from './PrivateRoute';
 import { AuthProvider } from './auth/useAuth';
 import { UserProvider } from './auth/useUser';
-
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <App />
-  },
-  {
-    path: '/login',
-    element: <Login />
-  },
-  {
-    path: '/register',
-    element: <Register />
-  },
-  {
-    path: '/quiz',
-    element: <PrivateRoute><Quiz /></PrivateRoute>
-  },
-  {
-    path: '/categories/:categoryId',
-    element: <PrivateRoute><Category /></PrivateRoute>
-  }
-])
+import { router } from './routes'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from "../auth/useAuth"
 import { Link } from 'react-router-dom';
 
-export default function Quiz() {
+export default function Categories() {
   const [categories, setCategories] = useState([])
   const auth = useAuth()
   useEffect(() => {
@@ -26,7 +26,7 @@ export default function Quiz() {
       <ul>
         {categories.map(category => (
           <li key={category.id}>
-            <Link to={`/categories/${category.id}`}>{category.name}</Link>
+            <Link to={`/quiz/${category.id}`}>{category.name}</Link>
           </li>
         ))
         }

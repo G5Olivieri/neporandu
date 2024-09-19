@@ -23,8 +23,8 @@ function App() {
               )}
             {auth.isLogged() && (
               <li>
-                <Link to="/quiz">
-                  Quiz
+                <Link to="/categories">
+                  Categorias
                 </Link>
               </li>
             )}
