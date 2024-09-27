@@ -7,7 +7,9 @@ import Quiz from './Quiz'
 import Lobby from './Quiz/Lobby'
 import Register from './Register'
 import SinglePlayer from './Quiz/SinglePlayer'
-import MultiPlayer from './Quiz/MultiPlayer'
+import MultiPlayer from './Quiz/Multiplayer'
+import NewRoom from './Quiz/Multiplayer/NewRoom'
+import Room from './Quiz/Multiplayer/Room'
 
 export const router = createBrowserRouter([
     {
@@ -42,6 +44,14 @@ export const router = createBrowserRouter([
             {
                 path: 'multiplayer',
                 element: <MultiPlayer />
+            },
+            {
+                path: 'multiplayer/new',
+                element: <NewRoom />
+            },
+            {
+                path: 'multiplayer/room',
+                element: <Room />
             }
         ]
     }

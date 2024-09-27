@@ -5,6 +5,7 @@ const argon2 = require('@node-rs/argon2')
 const jose = require('jose')
 const { MongoClient } = require("mongodb");
 const { MongoUserRepository, MongoQuizRepository } = require('./mongo')
+const { WebSocketServer } = require('ws')
 // const mysql = require('mysql2/promise')
 // const { MySQLUserRepository, MySQLQuizRepository } = require('./db')
 
@@ -182,6 +183,31 @@ async function main() {
 
     const server = app.listen(8080, () => {
         console.log("Running http://localhost:8080")
+    })
+
+    const wss = new WebSocketServer({ server })
+
+    wss.on('connection', (ws, request, client) => {
+        const url = new URL(request.url, "ws://base.url")
+        const token = url.searchParams.get("token")
+        jose.jwtVerify(token, secret)
+            .then(({ payload }) => payload)
+            .then(payload => {
+                if (!payload) {
+                    console.log("UNAUTHORIZED")
+                    ws.close()
+                } else {
+                    ws.on('message', (data) => {
+                        const event = JSON.parse(data.toString())
+                        console.log(event)
+                        switch(event.type) {
+                            case 'room.new':
+                                ws.send(`{"type": "room.created", "room": "${event.room}"}`)
+                                break;
+                        }
+                    })
+                }
+            })
     })
 
     process.on('SIGTERM', () => {
